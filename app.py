@@ -86,6 +86,30 @@ def add_customer():
     return "Customer Created Successfully"
     
     
+@app.route("/delete_customer", methods=['POST'])
+def delete_customer():
+    #Assuming that the request will be in the JSON form
+    request_data = request.get_json()
+
+    #Create a cursor for the database connection
+    cur = mysql.connection.cursor()
+
+    #Get customer ID from the JSON request
+    customer_id = request_data["customer_id"]
+
+    #Make sure that the customer ID exists
+    cur.execute("SELECT * FROM customer where customer_id = " + customer_id + " ;")
+    result = cur.fetchall()
+    if len(result) == 0:
+        return "Customer ID doesn't exists."
+
+    #Create a SQL query for deleting a customer from customer table
+    sql = "DELETE FROM customer WHERE customer_id = %s ;"
+    val = customer_id
+    cur.execute(sql, val)
+    mysql.connection.commit()
+
+    return "Customer Deleted Successfully"
 
     
 
