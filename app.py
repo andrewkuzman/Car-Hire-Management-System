@@ -18,6 +18,8 @@ mysql = MySQL(app)
 def index():
     return 'Index page'
 
+
+
 @app.route("/add_customer", methods=['POST'])
 def add_customer():
     #Assuming that the request will be in the JSON form
@@ -82,9 +84,11 @@ def add_customer():
         val = (number, customer_id)
         cur.execute(sql, val)
     mysql.connection.commit()
+    cur.close()
     
     return "Customer Created Successfully"
-    
+
+
     
 @app.route("/delete_customer", methods=['POST'])
 def delete_customer():
@@ -108,6 +112,7 @@ def delete_customer():
     val = customer_id
     cur.execute(sql, val)
     mysql.connection.commit()
+    cur.close()
 
     return "Customer Deleted Successfully"
 
@@ -182,9 +187,66 @@ def update_customer():
         val = (number, customer_id)
         cur.execute(sql, val)
     mysql.connection.commit()
+    cur.close()
     
     return "Customer Updated Successfully" 
 
+
+
+@app.route("/get_customer", methods=['POST'])
+def get_customer():
+    #Assuming that the request will be in the JSON form
+    request_data = request.get_json()
+
+    #Create a cursor for the database connection
+    cur = mysql.connection.cursor()
+
+    #Get search details from the JSON request
+    search_parameter = request_data["search_parameter"]
+    search_value = request_data["search_value"]
+
+    #Search by customer ID
+    if search_parameter == "customer_id":
+        sql = "SELECT * FROM customer WHERE customer_id = " + search_value + " ;"
+        cur.execute(sql)
+
+    #Search by customer name
+    elif search_parameter == "customer_name":
+        sql = "SELECT * FROM customer WHERE customer_name = '" + search_value + "' ;"
+        cur.execute(sql)
+
+    #Search by customer email
+    elif search_parameter == "email":
+        sql = "SELECT * FROM customer WHERE email = '" + search_value + "' ;"
+        cur.execute(sql)
+
+    #Search by customer address
+    elif search_parameter == "customer_address":
+        sql = "SELECT * FROM customer WHERE customer_address LIKE '%" + search_value + "%' ;"
+        cur.execute(sql)
+
+    #Search by customer phone
+    elif search_parameter == "phone":
+        sql = "SELECT customer_id FROM customer_phone WHERE phone = '" + search_value + "' ;"
+        cur.execute(sql)
+        customer_id = cur.fetchall()
+        for id in customer_id:
+            sql = "SELECT * FROM customer WHERE customer_id = " + str(id[0]) + " ;"
+            cur.execute(sql)
+    
+    #The search parameter was not one of the valid values
+    else:
+        return "Invalid search parameter."
+
+    #The result variable holds the customer(s) that was/were queried in the above code
+    result = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+    
+    if len(result) > 0:
+        return "Customer(s) found"
+    else:
+        return "Customer(s) not found"
 
 
 
