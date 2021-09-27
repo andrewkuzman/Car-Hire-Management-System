@@ -1,0 +1,17 @@
+Assumptions:
+
+-A customer can rent only one car at a time and can not rent
+again until he/she returns the rented car (hence customer entity
+has 1:1 relation with vehicle entity).
+
+-Customer Id can not be updated while updating customer details.
+
+-Request that are sent to the endpoints are in JSON format.
+
+
+Notes:
+
+-The field types image describe the data type of each entity attribute
+in the ERD diagram which was required to be delivered.
+
+-I used Postman to send post requests to the endpoints and debug my code.
