@@ -3,16 +3,17 @@ USE Car_Hire_Management_System;
 
 CREATE TABLE vehicle (
     vehicle_id INT NOT NULL,
-    vehicle_type CHAR NOT NULL,
-    model CHAR NOT NULL,
+    vehicle_type CHAR(255) NOT NULL,
+    model CHAR(255) NOT NULL,
     manf_year YEAR NOT NULL,
     PRIMARY KEY (vehicle_id)
 );
 
 CREATE TABLE customer (
     customer_id INT NOT NULL,
-    customer_name CHAR NOT NULL,
-    email CHAR,
+    customer_name CHAR(255) NOT NULL,
+    customer_address VARCHAR(400) NOT NULL,
+    email CHAR(255),
     PRIMARY KEY (customer_id)
 );
 
